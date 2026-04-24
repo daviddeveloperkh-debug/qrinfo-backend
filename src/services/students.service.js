@@ -1,4 +1,5 @@
 import { CustomError } from '../errors/custom.error.js'
+import { validateStudentData } from '../helpers/student-validation.helper.js'
 import studentsRepo from '../repositories/students.repo.js'
 // import welderCertificatesRepo from "../repositories/welder-certificates.repo.js";
 
@@ -17,8 +18,9 @@ const getStudentById = async (id, year) => {
 	return student
 }
 
-const createStudent = async requestData => {
+const createStudent = async body => {
 	const currentYear = new Date().getFullYear()
+	const requestData = validateStudentData(body)
 	return await studentsRepo.createStudent(requestData, currentYear)
 }
 
@@ -47,7 +49,7 @@ const dropStPartitionTable = async () => {
 	const targetYear = currentYear - 5
 	const tableName = `students_${targetYear}`
 	await studentsRepo.dropOldPartition(tableName)
-	return { success: true, tableName };
+	return { success: true, tableName }
 }
 
 export default {

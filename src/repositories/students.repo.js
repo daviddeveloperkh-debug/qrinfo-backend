@@ -107,7 +107,7 @@ const createStudent = async (requestData, currentYear) => {
 		.insert(students)
 		.values({
 			...requestData,
-			year: Number(currentYear),
+			year: currentYear,
 		})
 		.returning()
 	return student
