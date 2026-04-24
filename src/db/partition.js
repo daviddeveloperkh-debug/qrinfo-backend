@@ -34,7 +34,7 @@ export const students = pgTable(
 		qualification: text('qualification').notNull(),
 		birthDate: text('birth_date').notNull(),
 		passportNumber: text('passport_number').unique().notNull(),
-		certificateNumber: integer('certificate_number').notNull(),
+		certificateNumber: text('certificate_number').notNull(),
 		protocolNumber: text('protocol_number').notNull(),
 		protocolRegistrationDate: text('protocol_registration_date').notNull(),
 		commissionChairman: text('commission_chairman').notNull(),

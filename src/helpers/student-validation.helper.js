@@ -23,7 +23,7 @@ export const validateStudentData = data => {
 			data[field] === ''
 		) {
 			throw CustomError.validationError(
-				`Field "${field}" is required and cannot be empty`,
+				`Поле "${field}" обязательно для заполнения и не может быть пустым`,
 			)
 		}
 	}
@@ -39,11 +39,8 @@ export const validateStudentData = data => {
 			case 'passportNumber':
 			case 'protocolNumber':
 			case 'commissionChairman':
-				if (typeof data[key] !== 'string') data[key] = String(data[key])
-				break
-
 			case 'certificateNumber':
-				if (typeof data[key] !== 'number') data[key] = Number(data[key])
+				if (typeof data[key] !== 'string') data[key] = String(data[key])
 				break
 
 			case 'birthDate':
