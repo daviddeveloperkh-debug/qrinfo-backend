@@ -10,7 +10,7 @@ async function ensureYearlyPartition(year) {
 	const cacheKey = `table_exists:${tableName}`
 
 	const isCached = await redisClient.get(cacheKey)
-
+	
 	if (isCached) {
 		return
 	}
@@ -102,11 +102,24 @@ const getStudentById = async (id, year) => {
 }
 
 const createStudent = async (requestData, currentYear) => {
+	await redisClient.del(`table_exists:students_${currentYear}`) 
 	await ensureYearlyPartition(currentYear)
 	const [student] = await db
 		.insert(students)
 		.values({
-			...requestData,
+			given: requestData.given,
+			lastName: requestData.lastName,
+			firstName: requestData.firstName,
+			patronymic: requestData.patronymic,
+			specialty: requestData.specialty,
+			qualification: requestData.qualification,
+			birthDate: requestData.birthDate,
+			passportNumber: requestData.passportNumber,
+			certificateNumber: requestData.certificateNumber,
+			protocolNumber: requestData.protocolNumber,
+			protocolRegistrationDate: requestData.protocolRegistrationDate,
+			commissionChairman: requestData.commissionChairman,
+			photo: requestData.photo || null,
 			year: currentYear,
 		})
 		.returning()
