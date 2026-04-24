@@ -102,7 +102,6 @@ const getStudentById = async (id, year) => {
 }
 
 const createStudent = async (requestData, currentYear) => {
-	await redisClient.del(`table_exists:students_${currentYear}`) 
 	await ensureYearlyPartition(currentYear)
 	const [student] = await db
 		.insert(students)
