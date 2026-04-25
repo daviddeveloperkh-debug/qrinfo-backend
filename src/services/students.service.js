@@ -1,3 +1,4 @@
+import redisClient from '../db/redis.js'
 import { CustomError } from '../errors/custom.error.js'
 import { validateStudentData } from '../helpers/student-validation.helper.js'
 import studentsRepo from '../repositories/students.repo.js'
@@ -48,8 +49,9 @@ const dropStPartitionTable = async () => {
 	const currentYear = new Date().getFullYear()
 	const targetYear = currentYear - 5
 	const tableName = `students_${targetYear}`
-	await studentsRepo.dropOldPartition(tableName)
-	return { success: true, tableName }
+	const result = await studentsRepo.dropOldPartition(tableName)	
+	if (result) redisClient.del(tableName)
+	return result
 }
 
 export default {

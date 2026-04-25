@@ -6,23 +6,22 @@ import redisClient from '../db/redis.js'
 // import { welderCertificates } from "../db/schema.js";
 
 async function ensureYearlyPartition(year) {
-	const tableName = `students_${year}`
-	const cacheKey = `table_exists:${tableName}`
+	const partitionName = `students_${year}` // `students_2026`
 
-	const isCached = await redisClient.get(cacheKey)
-	
+	const isCached = await redisClient.get(partitionName) //students_2026
+
 	if (isCached) {
 		return
 	}
 
 	await db.execute(
-		sql.raw(`
-    CREATE TABLE IF NOT EXISTS ${tableName} 
-    PARTITION OF students 
-    FOR VALUES FROM (${year}) TO (${year + 1});
-  `),
+		sql`
+    CREATE TABLE IF NOT EXISTS ${sql.identifier(partitionName)} 
+    PARTITION OF ${students} 
+    FOR VALUES FROM (${sql.raw(year.toString())}) TO (${sql.raw((year + 1).toString())});
+  `,
 	)
-	await redisClient.set(cacheKey, 'true', {
+	await redisClient.set(partitionName, 'true', {
 		EX: 604800, // 7 days in seconds
 	})
 }
@@ -159,8 +158,31 @@ const getMonthlyStats = async () => {
 	return result.rows
 }
 
-const dropOldPartition = async tableName => {
-	await db.execute(sql.raw(`DROP TABLE IF EXISTS ${tableName};`))
+const dropOldPartition = async partitionTable => {
+	// 1. partition borligini tekshiramiz
+	const check = await db.execute(
+		sql.raw(`
+    SELECT to_regclass('${partitionTable}') as exists;
+  `),
+	)
+
+	if (!check.rows[0].exists) {
+		return false
+	}
+
+	// 2. parent dan detach qilamiz
+	await db.execute(
+		sql`ALTER TABLE ${students} DETACH PARTITION ${sql.identifier(partitionTable)};`,
+	)
+
+	// 3. partitionni o‘chiramiz
+	await db.execute(
+		sql.raw(`
+    DROP TABLE ${partitionTable};
+  `),
+	)
+
+	return true
 }
 
 export default {
