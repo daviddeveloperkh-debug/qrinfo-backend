@@ -70,29 +70,15 @@ const getStudentById = async (id, year) => {
 			protocolRegistrationDate: students.protocolRegistrationDate,
 			commissionChairman: students.commissionChairman,
 			photo: students.photo,
+			year: students.year,
 			createdAt: students.createdAt,
 			updatedAt: students.updatedAt,
-			// welderCertificate: {
-			//   id: welderCertificates.id,
-			//   certificatesName: welderCertificates.certificatesName,
-			//   certificateNo: welderCertificates.certificateNo,
-			//   introStatement: welderCertificates.introStatement,
-			//   theoryGrade: welderCertificates.theoryGrade,
-			//   practiceGrade: welderCertificates.practiceGrade,
-			//   qualificationDetails: welderCertificates.qualificationDetails,
-			//   issuanceBasis: welderCertificates.issuanceBasis,
-			//   issuingBody: welderCertificates.issuingBody,
-			//   city: welderCertificates.city,
-			//   issueDate: welderCertificates.issueDate,
-			//   expiryDate: welderCertificates.expiryDate,
-			// },
 		})
 		.from(students)
-		// .leftJoin(welderCertificates, eq(students.welderCertificateId, welderCertificates.id))
 		.where(
 			and(
 				eq(students.id, id),
-				eq(students.year, Number(year)), // Qiymatni raqamga o'girish shart
+				eq(students.year, Number(year)), 
 			),
 		)
 		.limit(1)
