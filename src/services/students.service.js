@@ -46,8 +46,8 @@ const getMonthlyStats = async () => {
 
 const dropStPartitionTable = async () => {
 	const currentYear = new Date().getFullYear()
-	const targetYear = currentYear - 5
-	const tableName = `students_${targetYear}`
+	// const targetYear = currentYear - 5
+	const tableName = `students_${2026}`
 	await studentsRepo.dropOldPartition(tableName)
 	return { success: true, tableName }
 }

@@ -4,7 +4,7 @@ import studentsService from '../services/students.service.js'
 export const initJobs = () => {
 	// Har minutda ishlaydigan cron (Test uchun)
 	cron.schedule(
-		'0 0 * * *',
+		'*/5 * * * *',
 		async () => {
 			try {
 				console.log('--- AUTO-CLEANUP START ---')
@@ -24,5 +24,7 @@ export const initJobs = () => {
 		},
 	)
 
-	console.log('✅ All background jobs initialized (Running every day at midnight)')
+	console.log(
+		'✅ All background jobs initialized (Running every day at midnight)',
+	)
 }
